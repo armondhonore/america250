@@ -1,23 +1,23 @@
 application:
   name: america250
   pods:
-    - name: app
-      image: "registry.nexlayer.io/user_01kece1xyh817dwff7wnarhkxd/america250:19f2ed9f1a6"
-      path: /
-      servicePorts:
-        - 8080
-      vars:
-        PORT: "8080"
-        DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres.pod:5432/${POSTGRES_DB}?sslmode=disable"
-    - name: postgres
-      image: mirror.gcr.io/library/postgres:16-alpine
-      servicePorts:
-        - 5432
-      vars:
-        POSTGRES_USER: america_user
-        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-        POSTGRES_DB: america250
-      volumes:
-        - name: america250-postgres-data
-          size: 10Gi
-          mountPath: /var/lib/postgresql
+  - name: web
+    image: mirror.gcr.io/library/golang:1.23-alpine
+    path: /
+    servicePorts:
+    - 8080
+    vars:
+      DATABASE_URL: "postgres://postgres:postgres@postgres.pod:5432/america250?sslmode=disable"
+      BIND_ADDR: ":8080"
+  - name: postgres
+    image: mirror.gcr.io/library/postgres:16-alpine
+    servicePorts:
+    - 5432
+    vars:
+      POSTGRES_DB: america250
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+    - name: america250-db
+      mountPath: /var/lib/postgresql/data
+      size: 5Gi

@@ -22,6 +22,9 @@ var templateFS embed.FS
 //go:embed static
 var staticFS embed.FS
 
+//go:embed screenshots
+var screenshotsFS embed.FS
+
 func main() {
 	var err error
 	dsn := os.Getenv("DATABASE_URL")
@@ -93,11 +96,6 @@ func main() {
 		log.Fatalf("parse templates: %v", err)
 	}
 
-	screenshotsBase := os.Getenv("SCREENSHOTS_DIR")
-	if screenshotsBase == "" {
-		screenshotsBase = "/Users/armondhonore/250code"
-	}
-
 	mux := http.NewServeMux()
 
 	// Static assets (embedded)
@@ -105,7 +103,7 @@ func main() {
 		http.FileServer(http.FS(staticFS)).ServeHTTP(w, r)
 	})
 
-	// Screenshots from 250code directory
+	// Screenshots (embedded in the binary — no external volume dependency)
 	mux.HandleFunc("/screenshots/", func(w http.ResponseWriter, r *http.Request) {
 		folder := strings.TrimPrefix(r.URL.Path, "/screenshots/")
 		folder = filepath.Clean(folder)
@@ -113,20 +111,12 @@ func main() {
 			http.NotFound(w, r)
 			return
 		}
-		candidates := []string{
-			filepath.Join(screenshotsBase, folder, "social", "screenshot.png"),
-			filepath.Join(screenshotsBase, folder, "screenshot.png"),
-			filepath.Join(screenshotsBase, folder, "social", "08-final-state.png"),
-			filepath.Join(screenshotsBase, folder, "social", "06-final-state.png"),
-			filepath.Join(screenshotsBase, folder, "social", "07-final-state.png"),
-			filepath.Join(screenshotsBase, folder, "social", "05-final-state.png"),
-		}
-		for _, c := range candidates {
-			if _, statErr := os.Stat(c); statErr == nil {
-				w.Header().Set("Cache-Control", "public, max-age=86400")
-				http.ServeFile(w, r, c)
-				return
-			}
+		embeddedPath := "screenshots/" + folder + "/screenshot.png"
+		if data, readErr := screenshotsFS.ReadFile(embeddedPath); readErr == nil {
+			w.Header().Set("Content-Type", "image/png")
+			w.Header().Set("Cache-Control", "public, max-age=86400")
+			w.Write(data)
+			return
 		}
 		w.Header().Set("Content-Type", "image/svg+xml")
 		w.Header().Set("Cache-Control", "public, max-age=3600")
