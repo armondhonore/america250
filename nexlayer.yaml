@@ -2,7 +2,7 @@ application:
   name: america250
   pods:
     - name: app
-      image: "registry.nexlayer.io/user_01kece1xyh817dwff7wnarhkxd/america250:19f2ec8eb5e"
+      image: "registry.nexlayer.io/user_01kece1xyh817dwff7wnarhkxd/america250:19f2ed9f1a6"
       path: /
       servicePorts:
         - 8080
@@ -14,7 +14,7 @@ application:
       servicePorts:
         - 5432
       vars:
-        POSTGRES_USER: app
+        POSTGRES_USER: america_user
         POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
         POSTGRES_DB: america250
       volumes:

@@ -15,26 +15,26 @@
 
 ## Project Summary
 <!-- nexlayer:section agent-managed=project_summary -->
-A Go-based web application serving static content and templates, utilizing a PostgreSQL database for data persistence.
+A Go-based web application for the america250 project, utilizing a PostgreSQL database for data persistence and serving static content and templates.
 <!-- nexlayer:end -->
 
 ## Technology Stack
 <!-- nexlayer:section agent-managed=tech_stack -->
 | Name | Kind | Version | Detected From |
 |------|------|---------|---------------|
-| Go | language | 1.23 | Dockerfile, go.mod |
-| pgx | framework | v5.10.0 | go.mod |
-| PostgreSQL | database | latest | go.mod |
-| Alpine Linux | infra | 3.19 | Dockerfile |
+| Go | language | 1.26.4 | go.mod |
+| PostgreSQL | database | Latest | go.mod |
+| pgx | tool | 5.10.0 | go.mod |
+| Alpine Linux | infra | 3.20 | Dockerfile |
 <!-- nexlayer:end -->
 
 ## Repository Structure
 <!-- nexlayer:section agent-managed=structure_map -->
-- handlers/ — HTTP request handler logic
-- static/ — Static assets
+- handlers/ — HTTP request handlers and business logic
+- static/ — Static assets (CSS, JS, Images)
 - templates/ — HTML templates for server-side rendering
-- seed/ — Database initialization/seeding scripts
-- main.go — Application entry point
+- seed/ — Database seeding scripts/data
+- main.go — Application entry point and routing
 <!-- nexlayer:end -->
 
 ## External Services Required
@@ -72,7 +72,7 @@ DATABASE_URL=postgresql://user:pass@localhost:5432/america250
 |-----|----------|-------|------|
 | `app` | `PORT` | `"8080"` | plain |
 | `app` | `DATABASE_URL` | `"postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres.pod:5432/${POSTGRES_DB}?sslmode=disable"` | inter-pod |
-| `postgres` | `POSTGRES_USER` | `app` | plain |
+| `postgres` | `POSTGRES_USER` | `america_user` | plain |
 | `postgres` | `POSTGRES_PASSWORD` | `${POSTGRES_PASSWORD}` | inter-pod |
 | `postgres` | `POSTGRES_DB` | `america250` | plain |
 | `america250-postgres-data` | `size` | `10Gi` | plain |
@@ -85,7 +85,7 @@ application:
   name: america250
   pods:
     - name: app
-      image: "registry.nexlayer.io/user_01kece1xyh817dwff7wnarhkxd/america250:19f2ec8eb5e"
+      image: "registry.nexlayer.io/user_01kece1xyh817dwff7wnarhkxd/america250:19f2ed9f1a6"
       path: /
       servicePorts:
         - 8080
@@ -97,7 +97,7 @@ application:
       servicePorts:
         - 5432
       vars:
-        POSTGRES_USER: app
+        POSTGRES_USER: america_user
         POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
         POSTGRES_DB: america250
       volumes:
@@ -105,7 +105,6 @@ application:
           size: 10Gi
           mountPath: /var/lib/postgresql
 ```
-
 <!-- nexlayer:end -->
 
 ## Nexlayer Deployment Plan
@@ -131,17 +130,17 @@ application:
 
 ## Nexlayer Configuration
 <!-- nexlayer:section agent-managed=nexlayer_config -->
-**Last deployed:** 2026-07-04T20:20:59Z  
+**Last deployed:** 2026-07-04T20:41:22Z  
 **Live URL:** https://relaxed-weasel-america250.cloud.nexlayer.ai  
-**Runtime:** go · **Port:** 8080  
-**Deploy branch:** main  
+**Runtime:**  · **Port:** auto-detected  
+**Deploy branch:** nexlayer  
 
 ```yaml
 application:
   name: america250
   pods:
     - name: app
-      image: "registry.nexlayer.io/user_01kece1xyh817dwff7wnarhkxd/america250:19f2ec8eb5e"
+      image: "registry.nexlayer.io/user_01kece1xyh817dwff7wnarhkxd/america250:19f2ed9f1a6"
       path: /
       servicePorts:
         - 8080
@@ -153,7 +152,7 @@ application:
       servicePorts:
         - 5432
       vars:
-        POSTGRES_USER: app
+        POSTGRES_USER: america_user
         POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
         POSTGRES_DB: america250
       volumes:
@@ -167,6 +166,7 @@ application:
 <!-- nexlayer:section agent-managed=build_history -->
 | Date | Status | Notes |
 |------|--------|-------|
-| 2026-07-04T20:19:29Z | analyzed | initial repo analysis |
-| 2026-07-04T20:20:59Z | success | deployed https://relaxed-weasel-america250.cloud.nexlayer.ai |
+| 2026-07-04T20:38:04Z | analyzed | initial repo analysis |
+| 2026-07-04T20:41:22Z | success | deployed https://relaxed-weasel-america250.cloud.nexlayer.ai |
 <!-- nexlayer:end -->
+
