@@ -182,6 +182,7 @@ CREATE TABLE IF NOT EXISTS apps (
     scaling_analysis TEXT DEFAULT '',
     deployment_complexity VARCHAR(20) DEFAULT 'Medium',
     monthly_equivalent_cost INTEGER DEFAULT 0,
+    improvement_note TEXT DEFAULT '',
 
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -189,6 +190,7 @@ CREATE INDEX IF NOT EXISTS idx_apps_num ON apps(num);
 CREATE INDEX IF NOT EXISTS idx_apps_score ON apps(total_score DESC);
 CREATE INDEX IF NOT EXISTS idx_apps_grade ON apps(grade);
 CREATE INDEX IF NOT EXISTS idx_apps_category ON apps(category);
+ALTER TABLE apps ADD COLUMN IF NOT EXISTS improvement_note TEXT DEFAULT '';
 `)
 	return err
 }

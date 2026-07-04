@@ -40,7 +40,7 @@ func DetailHandler(db *sql.DB, tmpl *template.Template) http.HandlerFunc {
 				score_scalability, score_client_server, score_data_safety, score_container, score_security,
 				score_local_testability, score_cost, score_issues, score_engineering, score_commercial_value,
 				total_score, grade, rank_position, stack_description, nexlayer_notes, scaling_analysis,
-				deployment_complexity, monthly_equivalent_cost
+				deployment_complexity, monthly_equivalent_cost, improvement_note
 			FROM apps WHERE num = $1`, num).Scan(
 			&a.ID, &a.Num, &a.Name, &a.Folder, &a.Category, &a.MainLanguage,
 			&a.GithubURL, &a.LiveURL, &a.LinkedinURL, &a.Blurb,
@@ -49,7 +49,7 @@ func DetailHandler(db *sql.DB, tmpl *template.Template) http.HandlerFunc {
 			&a.ScoreCost, &a.ScoreIssues, &a.ScoreEngineering, &a.ScoreCommercialValue,
 			&a.TotalScore, &a.Grade, &a.RankPosition,
 			&a.StackDescription, &a.NexlayerNotes, &a.ScalingAnalysis,
-			&a.DeploymentComplexity, &a.MonthlyEquivCost,
+			&a.DeploymentComplexity, &a.MonthlyEquivCost, &a.ImprovementNote,
 		)
 		if err == sql.ErrNoRows {
 			http.NotFound(w, r)

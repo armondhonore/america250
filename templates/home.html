@@ -1,6 +1,25 @@
 {{define "home-title"}}America 250 — OSS App Leaderboard{{end}}
 {{define "home-content"}}
 <div class="page-home">
+
+  <section class="manifesto">
+    <div class="manifesto-inner">
+      <p class="manifesto-kicker">WHY THIS EXISTS</p>
+      <h2 class="manifesto-title">Open source built the internet.<br>Bureaucracy is what's stopping it from scaling.</h2>
+      <div class="manifesto-body">
+        <p>Every app on this page is free, inspectable, and forkable. Open source is the closest thing software has to a public good — it's how a solo developer in any country gets the same database engine, the same web framework, the same AI tooling as a trillion-dollar company. That's the actual democratization story. Not a slogan — a fact you can verify by reading the source.</p>
+        <p>Nexlayer exists to finish that story on the infrastructure side. The code was already free. What wasn't free was the six-figure platform team, the weeks of YAML, the tribal knowledge required to take that code from a laptop to something that survives real traffic. We closed that gap: describe the app, and it deploys, scales, and stays up — no cluster expertise required. That's what "democratizing infrastructure" has to mean if the phrase is going to mean anything: the distance between an idea and a running, internet-scale service should be minutes, not a hiring plan.</p>
+      </div>
+
+      <div class="manifesto-thesis">
+        <h3 class="thesis-title">DevOps is done.</h3>
+        <p>Not "evolving." Not "shifting left." Done — as a discipline anyone should still be building a growing business around in 2026.</p>
+        <p>DevOps sold itself as the bridge between writing code and running it safely at scale. What it actually became, for most companies that aren't hyperscalers, is a full-time tax: a standing team whose job is translating application intent into YAML, tickets, and pipeline configuration by hand. That team doesn't make your product faster, safer, or more correct. It makes change slower and gives you a body of process to point to when something breaks. That's <em>perceived</em> value — the comfort of a process — not <em>real</em> value, which is uptime, velocity, and margin. A growing business pays for the appearance of control while actually getting less of it, because every change now routes through people whose job is the infrastructure, not the product.</p>
+        <p>That's the honest description of a cancer: a structure that consumes resources, grows regardless of whether it's helping the host, and crowds out the thing that was supposed to scale. An enterprise's ability to scale without compromise — technical or financial — degrades in direct proportion to how much of its engineering org exists to operate infrastructure instead of building on top of it. The apps on this page didn't need that team. They needed a description of what to run.</p>
+      </div>
+    </div>
+  </section>
+
   <div class="hero">
     <h1 class="hero-title">250 Open Source Apps<br><span class="hero-accent">Ranked & Scored</span></h1>
     <p class="hero-sub">Every app from the #250apps challenge, rated on scalability, security, engineering quality, and real-world deployability on Nexlayer.</p>
@@ -52,7 +71,7 @@
         <img class="card-img" src="/screenshots/{{.Folder}}" alt="{{.Name}} screenshot" loading="lazy">
         <div class="card-badges">
           <span class="badge-num">#{{.Num}}</span>
-          <span class="badge-grade" style="--grade-color:{{gradeColor .Grade}}">{{.Grade}}</span>
+          {{if .NeedsImprovement}}<span class="badge-needs-improvement">Needs Improvement</span>{{else}}<span class="badge-grade" style="--grade-color:{{gradeColor .Grade}}">{{.Grade}}</span>{{end}}
         </div>
         <div class="card-score-bar">
           <div class="score-fill" style="width:{{formatScore .TotalScore}}%"></div>
@@ -61,7 +80,7 @@
       <div class="card-body">
         <div class="card-title-row">
           <h3 class="card-title">{{.Name}}</h3>
-          <span class="card-score" style="color:{{gradeColor .Grade}}">{{formatScore .TotalScore}}</span>
+          {{if not .NeedsImprovement}}<span class="card-score" style="color:{{gradeColor .Grade}}">{{formatScore .TotalScore}}</span>{{end}}
         </div>
         <span class="card-category">{{.Category}}</span>
         <p class="card-blurb">{{.Blurb}}</p>

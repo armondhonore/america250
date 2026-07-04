@@ -38,6 +38,13 @@ type App struct {
 	ScalingAnalysis      string
 	DeploymentComplexity string
 	MonthlyEquivCost     int
+	ImprovementNote      string
+}
+
+// NeedsImprovement reports whether this app's grade is below C (D or F) —
+// these are shown as "Needs Improvement" with specifics instead of a letter grade.
+func (a App) NeedsImprovement() bool {
+	return a.Grade == "D" || a.Grade == "F"
 }
 
 type HomeData struct {
@@ -105,7 +112,7 @@ func HomeHandler(db *sql.DB, tmpl *template.Template) http.HandlerFunc {
 		q := `SELECT id, num, name, folder, category, main_language, github_url, live_url, linkedin_url, blurb,
 			score_scalability, score_client_server, score_data_safety, score_container, score_security,
 			score_local_testability, score_cost, score_issues, score_engineering, score_commercial_value,
-			total_score, grade, rank_position, deployment_complexity, monthly_equivalent_cost
+			total_score, grade, rank_position, deployment_complexity, monthly_equivalent_cost, improvement_note
 			FROM apps ` + where + ` ORDER BY ` + orderBy
 
 		rows, err := db.QueryContext(r.Context(), q, args...)
@@ -125,7 +132,7 @@ func HomeHandler(db *sql.DB, tmpl *template.Template) http.HandlerFunc {
 				&a.ScoreContainer, &a.ScoreSecurity, &a.ScoreLocalTest,
 				&a.ScoreCost, &a.ScoreIssues, &a.ScoreEngineering, &a.ScoreCommercialValue,
 				&a.TotalScore, &a.Grade, &a.RankPosition,
-				&a.DeploymentComplexity, &a.MonthlyEquivCost,
+				&a.DeploymentComplexity, &a.MonthlyEquivCost, &a.ImprovementNote,
 			)
 			if err != nil {
 				continue

@@ -43,6 +43,7 @@ type AppScore struct {
 	StackDescription string `json:"stack_description"`
 	NexlayerNotes    string `json:"nexlayer_notes"`
 	ScalingAnalysis  string `json:"scaling_analysis"`
+	ImprovementNote  string `json:"improvement_note"`
 }
 
 // Folder name overrides from linkedin-published.md (num → folder)
@@ -176,10 +177,12 @@ func main() {
     scaling_analysis TEXT DEFAULT '',
     deployment_complexity VARCHAR(20) DEFAULT 'Medium',
     monthly_equivalent_cost INTEGER DEFAULT 0,
+    improvement_note TEXT DEFAULT '',
     created_at TIMESTAMPTZ DEFAULT NOW()
 )`)
 	db.Exec(`CREATE INDEX IF NOT EXISTS idx_apps_num ON apps(num)`)
 	db.Exec(`CREATE INDEX IF NOT EXISTS idx_apps_score ON apps(total_score DESC)`)
+	db.Exec(`ALTER TABLE apps ADD COLUMN IF NOT EXISTS improvement_note TEXT DEFAULT ''`)
 
 	inserted, updated := 0, 0
 	for _, a := range apps {
@@ -190,8 +193,8 @@ func main() {
 				score_local_testability, score_cost, score_issues, score_engineering, score_commercial_value,
 				total_score, grade, rank_position,
 				stack_description, nexlayer_notes, scaling_analysis,
-				deployment_complexity, monthly_equivalent_cost)
-			VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25)
+				deployment_complexity, monthly_equivalent_cost, improvement_note)
+			VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26)
 			ON CONFLICT (num) DO UPDATE SET
 				name=EXCLUDED.name, folder=EXCLUDED.folder, category=EXCLUDED.category,
 				main_language=EXCLUDED.main_language, linkedin_url=COALESCE(NULLIF(EXCLUDED.linkedin_url,''), apps.linkedin_url),
@@ -204,13 +207,14 @@ func main() {
 				total_score=EXCLUDED.total_score, grade=EXCLUDED.grade, rank_position=EXCLUDED.rank_position,
 				stack_description=EXCLUDED.stack_description, nexlayer_notes=EXCLUDED.nexlayer_notes,
 				scaling_analysis=EXCLUDED.scaling_analysis,
-				deployment_complexity=EXCLUDED.deployment_complexity, monthly_equivalent_cost=EXCLUDED.monthly_equivalent_cost`,
+				deployment_complexity=EXCLUDED.deployment_complexity, monthly_equivalent_cost=EXCLUDED.monthly_equivalent_cost,
+				improvement_note=EXCLUDED.improvement_note`,
 			a.Num, a.Name, a.Folder, a.Category, a.MainLanguage, linkedinURL, a.Blurb,
 			a.Scalability, a.ClientServer, a.DataSafety, a.Container, a.Security,
 			a.LocalTestability, a.Cost, a.Issues, a.Engineering, a.CommercialValue,
 			a.TotalScore, a.Grade, rankMap[a.Num],
 			a.StackDescription, a.NexlayerNotes, a.ScalingAnalysis,
-			a.DeploymentComplexity, a.MonthlyEquivCost,
+			a.DeploymentComplexity, a.MonthlyEquivCost, a.ImprovementNote,
 		)
 		if err != nil {
 			log.Printf("insert #%d %s: %v", a.Num, a.Name, err)

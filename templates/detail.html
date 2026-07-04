@@ -16,7 +16,7 @@
     <div class="detail-header">
       <div class="detail-badges">
         <span class="badge-num-lg">#{{.App.Num}}</span>
-        <span class="badge-grade-lg" style="--grade-color:{{gradeColor .App.Grade}}">{{.App.Grade}}</span>
+        {{if .App.NeedsImprovement}}<span class="badge-needs-improvement-lg">Needs Improvement</span>{{else}}<span class="badge-grade-lg" style="--grade-color:{{gradeColor .App.Grade}}">{{.App.Grade}}</span>{{end}}
         <span class="badge-rank">Rank #{{.App.RankPosition}}</span>
       </div>
       <h1 class="detail-title">{{.App.Name}}</h1>
@@ -33,6 +33,7 @@
         {{if .App.LiveURL}}<a href="{{.App.LiveURL}}" target="_blank" rel="noopener" class="detail-link detail-link-live">Live Demo →</a>{{end}}
       </div>
 
+      {{if not .App.NeedsImprovement}}
       <div class="total-score-display">
         <div class="total-score-ring">
           <svg viewBox="0 0 100 100" class="score-ring-svg">
@@ -48,11 +49,19 @@
           </div>
         </div>
       </div>
+      {{end}}
     </div>
   </div>
 
   <div class="detail-body">
     <div class="detail-main">
+
+      {{if .App.NeedsImprovement}}
+      <section class="detail-section improvement-section">
+        <h2 class="section-title">⚠ Needs Improvement</h2>
+        <div class="section-body prose">{{.App.ImprovementNote}}</div>
+      </section>
+      {{end}}
 
       {{if .App.StackDescription}}
       <section class="detail-section">
@@ -78,6 +87,7 @@
     </div>
 
     <aside class="detail-sidebar">
+      {{if not .App.NeedsImprovement}}
       <div class="score-breakdown-card">
         <h3 class="sidebar-title">Score Breakdown</h3>
         {{range .Scores}}
@@ -93,12 +103,17 @@
         </div>
         {{end}}
       </div>
+      {{end}}
 
       <div class="sidebar-card">
         <h3 class="sidebar-title">Quick Stats</h3>
         <dl class="stat-list">
+          {{if .App.NeedsImprovement}}
+          <dt>Status</dt><dd class="needs-improvement-text">Needs Improvement</dd>
+          {{else}}
           <dt>Grade</dt><dd style="color:{{gradeColor .App.Grade}}; font-weight:700">{{.App.Grade}}</dd>
           <dt>Overall Score</dt><dd>{{formatScore .App.TotalScore}} / 100</dd>
+          {{end}}
           <dt>Category</dt><dd>{{.App.Category}}</dd>
           <dt>Primary Language</dt><dd>{{.App.MainLanguage}}</dd>
           <dt>Deploy Complexity</dt><dd class="complexity-{{lower .App.DeploymentComplexity}}">{{.App.DeploymentComplexity}}</dd>
