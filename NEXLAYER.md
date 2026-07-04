@@ -15,7 +15,7 @@
 
 ## Project Summary
 <!-- nexlayer:section agent-managed=project_summary -->
-A Go-based web application for the america250 project, utilizing a PostgreSQL database for data persistence and serving static content and templates.
+A Go-based web server for the america250 project, providing a backend API and serving static content/templates with a PostgreSQL database backend.
 <!-- nexlayer:end -->
 
 ## Technology Stack
@@ -23,18 +23,18 @@ A Go-based web application for the america250 project, utilizing a PostgreSQL da
 | Name | Kind | Version | Detected From |
 |------|------|---------|---------------|
 | Go | language | 1.26.4 | go.mod |
-| PostgreSQL | database | Latest | go.mod |
-| pgx | tool | 5.10.0 | go.mod |
+| pgx | framework | 5.10.0 | go.mod |
+| PostgreSQL | database | latest | go.mod |
 | Alpine Linux | infra | 3.20 | Dockerfile |
 <!-- nexlayer:end -->
 
 ## Repository Structure
 <!-- nexlayer:section agent-managed=structure_map -->
-- handlers/ — HTTP request handlers and business logic
-- static/ — Static assets (CSS, JS, Images)
-- templates/ — HTML templates for server-side rendering
-- seed/ — Database seeding scripts/data
-- main.go — Application entry point and routing
+- handlers/ — HTTP request handlers
+- seed/ — Database seeding scripts
+- static/ — Static assets
+- templates/ — HTML templates
+- main.go — Application entry point
 <!-- nexlayer:end -->
 
 ## External Services Required
@@ -85,7 +85,7 @@ application:
   name: america250
   pods:
     - name: app
-      image: "registry.nexlayer.io/user_01kece1xyh817dwff7wnarhkxd/america250:19f2ed9f1a6"
+      image: "registry.nexlayer.io/user_01kece1xyh817dwff7wnarhkxd/america250:19f2ee545ca"
       path: /
       servicePorts:
         - 8080
@@ -130,7 +130,7 @@ application:
 
 ## Nexlayer Configuration
 <!-- nexlayer:section agent-managed=nexlayer_config -->
-**Last deployed:** 2026-07-04T20:41:22Z  
+**Last deployed:** 2026-07-04T20:51:21Z  
 **Live URL:** https://relaxed-weasel-america250.cloud.nexlayer.ai  
 **Runtime:**  · **Port:** auto-detected  
 **Deploy branch:** nexlayer  
@@ -140,7 +140,7 @@ application:
   name: america250
   pods:
     - name: app
-      image: "registry.nexlayer.io/user_01kece1xyh817dwff7wnarhkxd/america250:19f2ed9f1a6"
+      image: "registry.nexlayer.io/user_01kece1xyh817dwff7wnarhkxd/america250:19f2ee545ca"
       path: /
       servicePorts:
         - 8080
@@ -166,7 +166,8 @@ application:
 <!-- nexlayer:section agent-managed=build_history -->
 | Date | Status | Notes |
 |------|--------|-------|
-| 2026-07-04T20:38:04Z | analyzed | initial repo analysis |
-| 2026-07-04T20:41:22Z | success | deployed https://relaxed-weasel-america250.cloud.nexlayer.ai |
+| 2026-07-04T20:50:25Z | analyzed | initial repo analysis |
+| 2026-07-04T20:51:21Z | success | deployed https://relaxed-weasel-america250.cloud.nexlayer.ai |
 <!-- nexlayer:end -->
+
 
